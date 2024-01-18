@@ -12,24 +12,26 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 
+class CustomAuthenticationForm(AuthenticationForm):
+    error_messages = {
+        'invalid_login': 'Credenciales inválidas. Por favor, inténtalo de nuevo.',
+        'inactive': 'Esta cuenta está inactiva.',
+    }
+
 def login_view(request):
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
+        form = CustomAuthenticationForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('login') 
-        else:
-            messages.error(request, 'Credenciales inválidas. Por favor, inténtalo de nuevo.')
+            return redirect('user-list')  # Utiliza la URL directamente
     else:
-        form = AuthenticationForm()
+        form = CustomAuthenticationForm()
     return render(request, 'login.html', {'form': form})
 
-@login_required(login_url='login')
 class UserListView(UserPassesTestMixin, ListView):
     model = User
     template_name = 'user_list.html'
-    login_url = reverse_lazy('')  # Reemplaza con el nombre de tu vista de inicio de sesión
 
     def test_func(self):
         return self.request.user.is_authenticated and self.request.user.is_superuser
