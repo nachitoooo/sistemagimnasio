@@ -29,6 +29,7 @@ def login_view(request):
         form = CustomAuthenticationForm()
     return render(request, 'login.html', {'form': form})
 
+
 class UserListView(UserPassesTestMixin, ListView):
     model = User
     template_name = 'user_list.html'

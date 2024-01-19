@@ -299,50 +299,78 @@ height: 100%;
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        let table = new DataTable('#myTable',{
-                    language: {
-                url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json',
-            },
-        });
-        $("#nuevo_miembro").click(function(){
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<!-- Agrega SweetAlert si aún no lo has hecho -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script>
+    $(document).ready(function() {
+        $("#nuevo_miembro").click(function() {
+            // Crea un formulario dinámicamente
+            let formHTML = `
+                <form id="crearUsuarioForm">
+                    <label for="DNI">DNI:</label>
+                    <input type="text" name="DNI" required>
+
+                    <label for="metodo_pago">Método de Pago:</label>
+                    <input type="text" name="metodo_pago" required>
+
+                    <label for="fecha_de_entrada">Fecha de Entrada:</label>
+                    <input type="date" name="fecha_de_entrada" required>
+
+                    <label for="numero_telefono">Número de Teléfono:</label>
+                    <input type="text" name="numero_telefono" required>
+
+                    <label for="dias_abonados">Días Abonados:</label>
+                    <input type="number" name="dias_abonados" required>
+
+                    {# Incluye el token CSRF en el formulario #}
+                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+                    <button type="submit">Crear Usuario</button>
+                </form>
+            `;
+
+            // Muestra el formulario con SweetAlert
             Swal.fire({
-            title: "Nuevo miembro",
-            input: "text",
-            inputAttributes: {
-                autocapitalize: "off"
-            },
-            showCancelButton: true,
-            confirmButtonText: "Look up",
-            showLoaderOnConfirm: true,
-            preConfirm: async (login) => {
-                try {
-                const githubUrl = `
-                    https://api.github.com/users/${login}
-                `;
-                const response = await fetch(githubUrl);
-                if (!response.ok) {
-                    return Swal.showValidationMessage(`
-                    ${JSON.stringify(await response.json())}
-                    `);
-                }
-                return response.json();
-                } catch (error) {
-                Swal.showValidationMessage(`
-                    Request failed: ${error}
-                `);
-                }
-            },
-            allowOutsideClick: () => !Swal.isLoading()
-            }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire({
-                title: `${result.value.login}'s avatar`,
-                imageUrl: result.value.avatar_url
-                });
-            }
+                title: "Nuevo miembro",
+                html: formHTML,
+                showCancelButton: true,
+                showConfirmButton: false,
             });
-        })
-    </script>
+
+            // Intercepta el envío del formulario
+            $("#crearUsuarioForm").submit(function(event) {
+                event.preventDefault();
+
+                // Obtén los datos del formulario
+                let formData = $(this).serialize();
+
+                // Envía la solicitud POST al servidor
+                $.ajax({
+                    type: "POST",
+                    url: "/api/v1/User/",  // Reemplaza con la URL correcta de tu API
+                    data: formData,
+                    success: function(response) {
+                        // Maneja la respuesta exitosa
+                        console.log(response);
+                        Swal.fire("Usuario creado exitosamente", "", "success");
+                    },
+                    error: function(error) {
+                        // Maneja el error
+                        console.error(error);
+                        Swal.fire("Error al crear usuario", "", "error");
+                    }
+                });
+
+                // Cierra SweetAlert después de enviar la solicitud
+                Swal.close();
+            });
+        });
+    });
+</script>
 </body>
 </html>
