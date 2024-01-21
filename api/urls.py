@@ -10,9 +10,10 @@ router.register(r'User', views.UserViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('user-list/', UserListView.as_view(), name='user-list'),  # Corregir aquí
+    path('user-list/', UserListView.as_view(), name='user-list'),  
     path('user-edit/<int:pk>/', UserUpdateView.as_view(), name='user-edit'),
-    path('login/', login_view, name='login'),  # Corregir aquí
+    path('login/', login_view, name='login'),
+    path('logout/', views.user_logout, name='logout'),
 ]
 
 if settings.DEBUG:

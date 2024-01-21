@@ -12,6 +12,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 
+
 class CustomAuthenticationForm(AuthenticationForm):
     error_messages = {
         'invalid_login': 'Credenciales inválidas. Por favor, inténtalo de nuevo.',
@@ -29,7 +30,6 @@ def login_view(request):
         form = CustomAuthenticationForm()
     return render(request, 'login.html', {'form': form})
 
-
 class UserListView(UserPassesTestMixin, ListView):
     model = User
     template_name = 'user_list.html'
@@ -44,7 +44,6 @@ class UserListView(UserPassesTestMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['today'] = datetime.now().date()
 
-        # Combina object_list y due_dates en una lista de tuplas
         context['users_with_due_dates'] = [
             (user, user.fecha_de_entrada + timedelta(days=user.dias_abonados))
             if user.fecha_de_entrada is not None and user.dias_abonados is not None
@@ -57,6 +56,10 @@ class UserListView(UserPassesTestMixin, ListView):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+def user_logout(request):
+    logout(request)
+    return redirect ('login')
 
 class UserUpdateView(UpdateView):
     model = User
