@@ -177,6 +177,12 @@
       #swal2-content {
         overflow: hidden;
       }
+      td.vencimiento_cuota_no{
+        background-color: green;
+      }
+      td.vencimiento_cuota_si{
+        background-color: red;
+      }
     </style>
   </head>
   <body>
@@ -264,35 +270,39 @@
       </div>
       <table id="myTable" class="table table-striped">
         <thead>
-          <tr>
-            <th>DNI</th>
-            <th>Nombre completo</th>
-            <th>Fecha de Entrada</th>
-            <th>Método de Pago</th>
-            <th>Número de Teléfono</th>
-            <th>Días Abonados</th>
-            <th>Vencimiento de Cuota</th>
-            <th>Direccion</th>
-          </tr>
+            <tr>
+                <th>DNI</th>
+                <th>Nombre completo</th>
+                <th>Fecha de Entrada</th>
+                <th>Método de Pago</th>
+                <th>Número de Teléfono</th>
+                <th>Días Abonados</th>
+                <th>Vencimiento de Cuota</th>
+                <th>Direccion</th>
+            </tr>
         </thead>
         <tbody>
-          {% for user, due_date in users_with_due_dates %}
-          <tr>
-            <td>
-              <a href="{% url 'user-edit' pk=user.pk %}">{{ user.DNI }}</a>
-            </td>
-            <td>{{ user.nombre_completo}}</td>
-            <td>{{ user.fecha_de_entrada }}</td>
-            <td>{{ user.metodo_pago }}</td>
-            <td>{{ user.numero_telefono }}</td>
-            <td>{{ user.dias_abonados }}</td>
-            <td>{% if due_date %}{{ due_date }}{% endif %}</td>
-            <td>{{ user.direccion}}</td>
-          </tr>
-          {% endfor %}
+            {% for user, due_date in users_with_due_dates %}
+            <tr>
+                <td>
+                    <a href="{% url 'user-edit' pk=user.pk %}">{{ user.DNI }}</a>
+                </td>
+                <td>{{ user.nombre_completo}}</td>
+                <td>{{ user.fecha_de_entrada }}</td>
+                <td>{{ user.metodo_pago }}</td>
+                <td>{{ user.numero_telefono }}</td>
+                <td>{{ user.dias_abonados }}</td>
+                <!-- Agrega la clase según la lógica al <td> de Vencimiento de Cuota -->
+                <td class="{% if due_date %}{% if due_date < today %}vencimiento_cuota_si{% else %}vencimiento_cuota_no{% endif %}{% else %}vencimiento_cuota_no{% endif %}">
+                    {% if due_date %}
+                        {{ due_date }}
+                    {% endif %}
+                </td>
+                <td>{{ user.direccion}}</td>
+            </tr>
+            {% endfor %}
         </tbody>
-      </table>
-    </div>
+    </table>
 
     <!-- Scripts -->
     <script
@@ -420,6 +430,23 @@
           });
         });
       });
+    </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function(){
+        var targetTable = document.getElementById('myTable');
+        var observer = new MutationObserver(function(mutations){
+            aplicarEstilos();
+        });
+    
+        var config = { childList: true };
+    
+        observer.observe(targetTable, config);
+    
+        function aplicarEstilos() {
+            $("#myTable td.vencimiento_cuota_no").css("background-color", "green");
+            $("#myTable td.vencimiento_cuota_si").css("background-color", "red");
+        }
+    });
     </script>
   </body>
 </html>
