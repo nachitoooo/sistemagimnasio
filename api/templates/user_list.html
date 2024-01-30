@@ -279,6 +279,7 @@
                 <th>Días Abonados</th>
                 <th>Vencimiento de Cuota</th>
                 <th>Direccion</th>
+                <th>Opciones</th>
             </tr>
         </thead>
         <tbody>
@@ -292,13 +293,23 @@
                 <td>{{ user.metodo_pago }}</td>
                 <td>{{ user.numero_telefono }}</td>
                 <td>{{ user.dias_abonados }}</td>
-                <!-- Agrega la clase según la lógica al <td> de Vencimiento de Cuota -->
                 <td class="{% if due_date %}{% if due_date < today %}vencimiento_cuota_si{% else %}vencimiento_cuota_no{% endif %}{% else %}vencimiento_cuota_no{% endif %}">
                     {% if due_date %}
                         {{ due_date }}
                     {% endif %}
                 </td>
-                <td>{{ user.direccion}}</td>
+                <td>{{ user.direccion }}</td>
+                <td>
+                  <!-- Botón de Editar -->
+                  <a href="{% url 'user-edit' pk=user.pk %}">Editar</a>
+                  
+                  <!-- Botón de Eliminar -->
+                  <form method="post" action="">
+                      {% csrf_token %}
+                      <input type="hidden" name="delete_user" value="{{ user.pk }}">
+                      <button type="submit">Eliminar</button>
+                  </form>
+              </td>
             </tr>
             {% endfor %}
         </tbody>

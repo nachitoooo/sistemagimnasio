@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from rest_framework import viewsets
 from .serializer import UserSerializer
 from django.views.generic import ListView, UpdateView
@@ -10,8 +10,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-
-
 
 class CustomAuthenticationForm(AuthenticationForm):
     error_messages = {
@@ -40,6 +38,18 @@ class UserListView(UserPassesTestMixin, ListView):
     def get_queryset(self):
         return User.objects.all()
 
+    def post(self, request, *args, **kwargs):
+        if 'delete_user' in request.POST:
+            user_id = request.POST.get('delete_user')
+            user = get_object_or_404(User, pk=user_id)
+            user.delete()
+        elif 'edit_user' in request.POST:
+            user_id = request.POST.get('edit_user')
+            user = get_object_or_404(User, pk=user_id)
+            return render(request, 'user_edit.html', {'user': user})
+
+        return redirect('user-list')
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['today'] = datetime.now().date()
@@ -50,7 +60,7 @@ class UserListView(UserPassesTestMixin, ListView):
             else (user, None)
             for user in context['object_list']
         ]
-        
+
         return context
 
 class UserViewSet(viewsets.ModelViewSet):
