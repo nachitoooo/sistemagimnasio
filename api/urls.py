@@ -14,11 +14,9 @@ urlpatterns = [
     path('login/', login_view, name='login'),
     path('logout/', views.user_logout, name='logout'),
     path('user-edit/<int:pk>/', UserUpdateView.as_view(), name='user-edit'),  # Agrega esta línea
+    path('', login_view, name='login'),
 
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    
-urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
