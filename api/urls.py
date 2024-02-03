@@ -14,6 +14,7 @@ urlpatterns = [
     path('login/', login_view, name='login'),
     path('logout/', views.user_logout, name='logout'),
     path('user-edit/<int:pk>/', UserUpdateView.as_view(), name='user-edit'),  # Agrega esta línea
+    path('', login_view, name='login'),
 
 ]
 
