@@ -23,7 +23,7 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('user-list')  # Utiliza la URL directamente
+            return redirect('user-list') 
     else:
         form = CustomAuthenticationForm()
     return render(request, 'login.html', {'form': form})

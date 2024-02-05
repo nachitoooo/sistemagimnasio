@@ -6,7 +6,6 @@ charset-normalizer==3.3.2
 clr-loader==0.2.6
 comtypes==1.2.1
 contourpy==1.2.0
-customtkinter==5.2.2
 cycler==0.12.1
 darkdetect==0.8.0
 dj-database-url==2.1.0
@@ -28,9 +27,7 @@ psycopg2-binary==2.9.9
 pycparser==2.21
 pyparsing==3.1.1
 python-dateutil==2.8.2
-pythonnet==3.0.3
 pytz==2023.3.post1
-pywifi==1.1.12
 requests==2.31.0
 six==1.16.0
 sqlparse==0.4.4
