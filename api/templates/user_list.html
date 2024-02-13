@@ -24,6 +24,9 @@
     />
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css"> -->
     <!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css"> -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+
     <meta charset="UTF-8" />
     <title>User List</title>
     <style>
@@ -183,6 +186,29 @@
       td.vencimiento_cuota_si{
         background-color: red;
       }
+      .edit-btn, .delete-btn {
+        padding: 10px 20px;
+        font-size: 16px;
+        margin-right: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f5f5f5;
+        color: #333;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        width: 150px; 
+      }
+      .edit-btn:hover, .delete-btn:hover {
+        background-color: #e0e0e0;
+      }
+      
+      .icon {
+        margin-right: 8px;
+      }
     </style>
   </head>
   <body>
@@ -283,36 +309,37 @@
             </tr>
         </thead>
         <tbody>
-            {% for user, due_date in users_with_due_dates %}
-            <tr>
-                <td>
-                    <a href="{% url 'user-edit' pk=user.pk %}">{{ user.DNI }}</a>
-                </td>
-                <td>{{ user.nombre_completo}}</td>
-                <td>{{ user.fecha_de_entrada }}</td>
-                <td>{{ user.metodo_pago }}</td>
-                <td>{{ user.numero_telefono }}</td>
-                <td>{{ user.dias_abonados }}</td>
-                <td class="{% if due_date %}{% if due_date < today %}vencimiento_cuota_si{% else %}vencimiento_cuota_no{% endif %}{% else %}vencimiento_cuota_no{% endif %}">
-                    {% if due_date %}
-                        {{ due_date }}
-                    {% endif %}
-                </td>
-                <td>{{ user.direccion }}</td>
-                <td>
-                  <!-- Botón de Editar -->
-                  <a href="{% url 'user-edit' pk=user.pk %}">Editar</a>
-                  
-                  <!-- Botón de Eliminar -->
-                  <form method="post" action="">
-                      {% csrf_token %}
-                      <input type="hidden" name="delete_user" value="{{ user.pk }}">
-                      <button type="submit">Eliminar</button>
-                  </form>
+          {% for user, due_date in users_with_due_dates %}
+          <tr>
+              <td>
+                  <a href="{% url 'user-edit' pk=user.pk %}">{{ user.DNI }}</a>
               </td>
-            </tr>
-            {% endfor %}
-        </tbody>
+              <td>{{ user.nombre_completo}}</td>
+              <td>{{ user.fecha_de_entrada }}</td>
+              <td>{{ user.metodo_pago }}</td>
+              <td>{{ user.numero_telefono }}</td>
+              <td>{{ user.dias_abonados }}</td>
+              <td class="{% if due_date %}{% if due_date < today %}vencimiento_cuota_si{% else %}vencimiento_cuota_no{% endif %}{% else %}vencimiento_cuota_no{% endif %}">
+                  {% if due_date %}
+                      {{ due_date }}
+                  {% endif %}
+              </td>
+              <td>{{ user.direccion }}</td>
+              <td>
+                <a href="{% url 'user-edit' pk=user.pk %}" class="edit-btn">
+                  <span class="icon">&#9998;</span> Editar
+                </a>
+                <form method="post" action="">
+                  {% csrf_token %}
+                  <input type="hidden" name="delete_user" value="{{ user.pk }}">
+                  <button type="submit" class="delete-btn">
+                    <span class="icon">&#10006;</span> Eliminar
+                  </button>
+                </form>
+              </td>
+          </tr>
+          {% endfor %}
+      </tbody>
     </table>
 
     <!-- Scripts -->
