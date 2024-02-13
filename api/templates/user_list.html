@@ -329,13 +329,33 @@
                 <a href="{% url 'user-edit' pk=user.pk %}" class="edit-btn">
                   <span class="icon">&#9998;</span> Editar
                 </a>
-                <form method="post" action="">
+                <form method="post" action="" id="delete-form-{{ user.pk }}">
                   {% csrf_token %}
                   <input type="hidden" name="delete_user" value="{{ user.pk }}">
-                  <button type="submit" class="delete-btn">
-                    <span class="icon">&#10006;</span> Eliminar
+                  <button type="button" class="delete-btn" data-user-id="{{ user.pk }}">
+                      <span class="icon">&#10006;</span> Eliminar
                   </button>
-                </form>
+              </form>
+  
+              <script>
+                  document.querySelector('.delete-btn[data-user-id="{{ user.pk }}"]').addEventListener('click', function () {
+                      Swal.fire({
+                          title: "Eliminar usuario",
+                          text: "¿Estás seguro de que deseas eliminar este usuario?",
+                          icon: "warning",
+                          showCancelButton: true,
+                          confirmButtonColor: "#d33",
+                          cancelButtonColor: "#3085d6",
+                          confirmButtonText: "Sí, eliminar",
+                          cancelButtonText: "Cancelar"
+                      }).then((result) => {
+                          if (result.isConfirmed) {
+                              // Envía el formulario de eliminación manualmente
+                              document.getElementById('delete-form-{{ user.pk }}').submit();
+                          }
+                      });
+                  });
+              </script>
               </td>
           </tr>
           {% endfor %}
@@ -362,113 +382,138 @@
 
     <!-- Agrega SweetAlert si aún no lo has hecho -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-
     <script>
       $(document).ready(function () {
-        let table = new DataTable("#myTable");
-        $("#nuevo_miembro").click(function () {
-          // Crea un formulario dinámicamente
-          let formHTML = `
-            <form id="crearUsuarioForm">
-                <div class="row mt-1">
-                    <div class="col">
-                        <div class="input-group mb-3">
-                            <!-- <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"> -->
-                            <input type="text" class="form-control" name="DNI" placeholder="Dni">
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" name="nombre_completo" placeholder="Nombre completo">
-                        </div>
-                    </div>
-                </div>
-                <div class="row mt-1">
-                    <div class="col">
-                        
-                        <div class="input-group mb-3">
-                            fecha de entrada
-                            <input type="date" class="form-control" name="fecha_de_entrada" placeholder="Fecha de entrada">
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" name="numero_telefono" placeholder="Numero de telefono">
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" name="direccion" placeholder="Direccion">
-                        </div>
-                    </div>
-                </div>
-                <div class="row mt-1">
-                    <div class="col">
-                        <select name="metodo_pago" class="form-select" aria-label="Default select example">
-                            <option selected>Seleccionar un metodo de pago</option>
-                            <option value="Efectivo">Efectivo</option>
-                            <option value="Mercado Pago">Mercado Pago</option>
-                            <option value="Transferencia Bancaria">Transferencia Bancaria</option>
-                        </select>
-                    </div>
-                    <div class="col">
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" name="dias_abonados" placeholder="Días Abonados">
-                        </div>
-                    </div>
-                </div>
+          let table = new DataTable("#myTable");
 
-                {# Incluye el token CSRF en el formulario #}
-                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-                <div class="botones m-3">
-                    <button type="none" class="btn btn-danger">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Crear Usuario</button> 
-                </div>
-            </form>
-            `;
+          $("#nuevo_miembro").click(function () {
+              let formHTML = `
+                  <form id="crearUsuarioForm">
+                      <div class="row mt-1">
+                          <div class="col">
+                              <div class="input-group mb-3">
+                                  <input type="text" class="form-control" name="DNI" placeholder="Dni">
+                              </div>
+                          </div>
+                          <div class="col">
+                              <div class="input-group mb-3">
+                                  <input type="text" class="form-control" name="nombre_completo" placeholder="Nombre completo">
+                              </div>
+                          </div>
+                      </div>
+                      <div class="row mt-1">
+                          <div class="col">
+                              <div class="input-group mb-3">
+                                  fecha de entrada
+                                  <input type="date" class="form-control" name="fecha_de_entrada" placeholder="Fecha de entrada">
+                              </div>
+                          </div>
+                          <div class="col">
+                              <div class="input-group mb-3">
+                                  <input type="text" class="form-control" name="numero_telefono" placeholder="Numero de telefono">
+                              </div>
+                          </div>
+                          <div class="col">
+                              <div class="input-group mb-3">
+                                  <input type="text" class="form-control" name="direccion" placeholder="Direccion">
+                              </div>
+                          </div>
+                      </div>
+                      <div class="row mt-1">
+                          <div class="col">
+                              <select name="metodo_pago" class="form-select" aria-label="Default select example">
+                                  <option selected>Seleccionar un metodo de pago</option>
+                                  <option value="Efectivo">Efectivo</option>
+                                  <option value="Mercado Pago">Mercado Pago</option>
+                                  <option value="Transferencia Bancaria">Transferencia Bancaria</option>
+                              </select>
+                          </div>
+                          <div class="col">
+                              <div class="input-group mb-3">
+                                  <input type="text" class="form-control" name="dias_abonados" placeholder="Días Abonados">
+                              </div>
+                          </div>
+                      </div>
 
-          // Muestra el formulario con SweetAlert
-          Swal.fire({
-            title: "Nuevo miembro",
-            html: formHTML,
-            showCancelButton: false,
-            showConfirmButton: false,
-            width: 1000,
-            heightAuto: false,
-            height: 1200,
+                      <!-- Incluye el token CSRF en el formulario -->
+                      <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                      <div class="botones m-3">
+                          <button type="none" class="btn btn-danger">Cancelar</button>
+                          <button type="submit" class="btn btn-primary">Crear Usuario</button>
+                      </div>
+                  </form>
+              `;
+
+              Swal.fire({
+                  title: "Nuevo miembro",
+                  html: formHTML,
+                  showCancelButton: false,
+                  showConfirmButton: false,
+                  width: 1000,
+                  heightAuto: false,
+                  height: 1200,
+              });
+
+              $("#crearUsuarioForm").submit(function (event) {
+                  event.preventDefault();
+
+                  let formData = $(this).serialize();
+
+                  $.ajax({
+                      type: "POST",
+                      url: "/api/v1/User/",
+                      data: formData,
+                      success: function (response) {
+                          console.log(response);
+                          Swal.fire("Usuario creado exitosamente", "", "success");
+                          $('#myTable').DataTable().ajax.reload();
+                      },
+                      error: function (error) {
+                          console.error(error);
+                          Swal.fire("Error al crear usuario, por favor, ingrese datos válidos.", "", "error");
+                      },
+                  });
+
+                  // Cierra SweetAlert después de enviar la solicitud
+                  Swal.close();
+              });
           });
 
-          // Intercepta el envío del formulario
-          $("#crearUsuarioForm").submit(function (event) {
-            event.preventDefault();
-
-            // Obtén los datos del formulario
-            let formData = $(this).serialize();
-
-            // Envía la solicitud POST al servidor
-            $.ajax({
-              type: "POST",
-              url: "/api/v1/User/", // Reemplaza con la URL correcta de tu API
-              data: formData,
-              success: function (response) {
-                // Maneja la respuesta exitosa
-                console.log(response);
-                Swal.fire("Usuario creado exitosamente", "", "success");
-                $('#myTable').DataTable().ajax.reload();
-              },
-              error: function (error) {
-                // Maneja el error
-                console.error(error);
-                Swal.fire("Error al crear usuario", "", "error");
-              },
+          // Eliminar usuario
+           // Eliminar usuario
+           $("#delete-btn").click(function () {
+            Swal.fire({
+                title: "Eliminar usuario",
+                text: "¿Estás seguro de que deseas eliminar este usuario?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Sí, eliminar",
+                cancelButtonText: "Cancelar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Simulando una llamada AJAX de eliminación
+                    $.ajax({
+                        type: "DELETE",
+                        url: "/api/v1/User/" + userId, // Reemplaza con la URL correcta de tu API y el ID del usuario a eliminar
+                        success: function (response) {
+                            console.log(response);
+                            Swal.fire("Usuario eliminado exitosamente", "", "success");
+                            $('#myTable').DataTable().ajax.reload();
+                        },
+                        error: function (error) {
+                            console.error(error);
+                            Swal.fire("Error al eliminar usuario", "", "error");
+                        }
+                    });
+                }
             });
-
-            // Cierra SweetAlert después de enviar la solicitud
-            Swal.close();
-          });
         });
-      });
-    </script>
+    });
+</script>
+
+
     <script>
       document.addEventListener('DOMContentLoaded', function(){
         var targetTable = document.getElementById('myTable');
