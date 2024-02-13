@@ -181,10 +181,10 @@
         overflow: hidden;
       }
       td.vencimiento_cuota_no{
-        background-color: green;
+        background-color: #146f05;
       }
       td.vencimiento_cuota_si{
-        background-color: red;
+        background-color: #ff0000;
       }
       .edit-btn, .delete-btn {
         padding: 10px 20px;
@@ -218,67 +218,19 @@
         <li>
           <a href="https://jbfarrow.com">
             <i class="fa fa-home fa-2x"></i>
-            <span class="nav-text"> Community Dashboard </span>
+            <span class="nav-text"> Inicio </span>
           </a>
         </li>
-        <li class="has-subnav">
-          <a href="#">
-            <i class="fa fa-globe fa-2x"></i>
-            <span class="nav-text"> Global Surveyors </span>
-          </a>
-        </li>
-        <li class="has-subnav">
-          <a href="#">
-            <i class="fa fa-comments fa-2x"></i>
-            <span class="nav-text"> Group Hub Forums </span>
-          </a>
-        </li>
-        <li class="has-subnav">
-          <a href="#">
-            <i class="fa fa-camera-retro fa-2x"></i>
-            <span class="nav-text"> Survey Photos </span>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i class="fa fa-film fa-2x"></i>
-            <span class="nav-text"> Surveying Tutorials </span>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i class="fa fa-book fa-2x"></i>
-            <span class="nav-text"> Surveying Jobs </span>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i class="fa fa-cogs fa-2x"></i>
-            <span class="nav-text"> Tools & Resources </span>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i class="fa fa-map-marker fa-2x"></i>
-            <span class="nav-text"> Member Map </span>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i class="fa fa-info fa-2x"></i>
-            <span class="nav-text"> Documentation </span>
-          </a>
-        </li>
-      </ul>
+        <ul class="logout">
+          <li>
+            <a href="{% url 'logout' %}">
+              <i class="fa fa-power-off fa-2x"></i>
+              <span class="nav-text"> Cierre de sesión </span>
+            </a>
+          </li>
+        </ul>
 
-      <ul class="logout">
-        <li>
-          <a href="{% url 'logout' %}">
-            <i class="fa fa-power-off fa-2x"></i>
-            <span class="nav-text"> Logout </span>
-          </a>
-        </li>
-      </ul>
+      
     </nav>
 
     <div class="container">
@@ -299,13 +251,13 @@
             <tr>
                 <th>DNI</th>
                 <th>Nombre completo</th>
-                <th>Fecha de Entrada</th>
-                <th>Método de Pago</th>
-                <th>Número de Teléfono</th>
-                <th>Días Abonados</th>
-                <th>Vencimiento de Cuota</th>
+                <th>Fecha de entrada</th>
+                <th>Método de pago</th>
+                <th>Número de teléfono</th>
+                <th>Días abonados</th>
+                <th>Vencimiento de cuota</th>
                 <th>Direccion</th>
-                <th>Opciones</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -328,7 +280,7 @@
               <td>
                 <a href="{% url 'user-edit' pk=user.pk %}" class="edit-btn">
                   <span class="icon">&#9998;</span> Editar
-                </a>
+                </a>  
                 <form method="post" action="" id="delete-form-{{ user.pk }}">
                   {% csrf_token %}
                   <input type="hidden" name="delete_user" value="{{ user.pk }}">
@@ -350,7 +302,6 @@
                           cancelButtonText: "Cancelar"
                       }).then((result) => {
                           if (result.isConfirmed) {
-                              // Envía el formulario de eliminación manualmente
                               document.getElementById('delete-form-{{ user.pk }}').submit();
                           }
                       });
@@ -445,7 +396,7 @@
               `;
 
               Swal.fire({
-                  title: "Nuevo miembro",
+                  title: "Nuevo Miembro",
                   html: formHTML,
                   showCancelButton: false,
                   showConfirmButton: false,
@@ -493,10 +444,9 @@
                 cancelButtonText: "Cancelar"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Simulando una llamada AJAX de eliminación
                     $.ajax({
                         type: "DELETE",
-                        url: "/api/v1/User/" + userId, // Reemplaza con la URL correcta de tu API y el ID del usuario a eliminar
+                        url: "/api/v1/User/" + userId,
                         success: function (response) {
                             console.log(response);
                             Swal.fire("Usuario eliminado exitosamente", "", "success");
@@ -526,8 +476,8 @@
         observer.observe(targetTable, config);
     
         function aplicarEstilos() {
-            $("#myTable td.vencimiento_cuota_no").css("background-color", "green");
-            $("#myTable td.vencimiento_cuota_si").css("background-color", "red");
+            $("#myTable td.vencimiento_cuota_no").css("background-color", "#146f05");
+            $("#myTable td.vencimiento_cuota_si").css("background-color", "#ff0000");
         }
     });
     </script>
