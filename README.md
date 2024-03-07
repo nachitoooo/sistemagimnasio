@@ -4,6 +4,6 @@ Step by step how to use this sistem.
 - cd sistemagimnasio
 - python manage.py runserver
 - Login with this values :
-- ghubtest
-- admin123
+- USER : ghubtest
+- PASSWORD : admin123
 - Enjoy!
